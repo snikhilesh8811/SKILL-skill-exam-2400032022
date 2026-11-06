@@ -1,0 +1,9 @@
+@"
+.metadata/
+target/
+.settings/
+.classpath
+.project
+*.log
+.env
+"@ | Set-Content .gitignore

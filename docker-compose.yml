@@ -1,0 +1,38 @@
+
+services:
+
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: shipment-postgres
+    environment:
+      POSTGRES_DB: skill_exam_2400032022
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d skill_exam_2400032022"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: docker-skill-exam-2400032022:latest
+    build:
+      context: ./SpringDemoProject-1
+      dockerfile: Dockerfile
+    container_name: shipment-backend
+    ports:
+      - "2022:2000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/skill_exam_2400032022
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: docker
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
